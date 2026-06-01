@@ -1,0 +1,65 @@
+// Price Tracker & Alert Engine — Database Schema
+// Using SQLite for zero-config local development
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Product {
+  id           String       @id @default(cuid())
+  name         String
+  url          String       @unique
+  platform     String       // "amazon" | "flipkart"
+  imageUrl     String?
+  currentPrice Float?
+  lowestPrice  Float?
+  highestPrice Float?
+  targetPrice  Float?       // User's desired price for alert trigger
+  isActive     Boolean      @default(true)
+  currency     String       @default("INR") // Track preferred display currency
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  priceHistory PricePoint[]
+  alerts       Alert[]
+}
+
+model PricePoint {
+  id        String   @id @default(cuid())
+  price     Float
+  currency  String   @default("INR")
+  scrapedAt DateTime @default(now())
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Alert {
+  id          String   @id @default(cuid())
+  type        String   // "email" | "whatsapp"
+  destination String   // email address or phone number
+  triggerType String   // "price_drop" | "target_reached" | "back_in_stock"
+  isActive    Boolean  @default(true)
+
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  logs        AlertLog[]
+}
+
+model AlertLog {
+  id       String   @id @default(cuid())
+  message  String
+  status   String   // "sent" | "failed"
+  sentAt   DateTime @default(now())
+  metadata String?  // JSON string for API response details
+
+  alertId  String
+  alert    Alert    @relation(fields: [alertId], references: [id], onDelete: Cascade)
+}
