@@ -12,4 +12,4 @@
 # The price displayed will only be in the currency unit chosen by the user at the start of tracking process.
 <img width="1148" height="1130" alt="image" src="https://github.com/user-attachments/assets/8c37fb20-54c7-42b6-b768-a2b51c1e9a04" />
 
-# ASIN is simply cliped from the user provided link. Different currency options are provided for users to ensure comprehensive purchases.
+# ASIN is simply clipped from the user provided link. Different currency options are provided for users to ensure comprehensive purchases.
